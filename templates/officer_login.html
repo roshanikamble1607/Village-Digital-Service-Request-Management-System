@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Officer Portal Login | Village Digital Service System{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card auth-card-narrow officer-login-card">
+        <div class="auth-header">
+            <span class="auth-icon">🏛️</span>
+            <span class="portal-badge">Administration Portal</span>
+            <h2>Gram Sevak / Officer Sign In</h2>
+            <p>Authorized access for village administrative officers and panchayat staff.</p>
+        </div>
+
+        <!-- Default Credentials Hint for BCA Project Evaluation -->
+        <div class="demo-credentials-box">
+            <strong>Default Demo Officer Account:</strong><br>
+            <span>Email: <code>officer@village.gov.in</code></span> &bull; 
+            <span>Password: <code>officer123</code></span>
+        </div>
+
+        <form method="POST" action="{{ url_for('officer_login') }}" class="auth-form" novalidate>
+            <div class="form-group">
+                <label for="email">Officer Official Email <span class="required">*</span></label>
+                <input type="email" id="email" name="email" class="form-control" 
+                       placeholder="e.g. officer@village.gov.in" 
+                       value="{{ request.form.get('email', '') }}" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Security Password <span class="required">*</span></label>
+                <input type="password" id="password" name="password" class="form-control" 
+                       placeholder="Enter officer password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block btn-officer">Sign In as Officer</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Are you a village citizen? <a href="{{ url_for('login') }}">Citizen Login here &rarr;</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

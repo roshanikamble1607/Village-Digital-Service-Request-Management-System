@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}My Applications | Village Digital Service System{% endblock %}
+
+{% block content %}
+<div class="my-apps-wrapper">
+    <!-- Header Card -->
+    <div class="page-header-card">
+        <div class="header-flex">
+            <div>
+                <span class="page-tag">Citizen Portal</span>
+                <h2>My Service Applications &amp; Requests</h2>
+                <p>Track the real-time status and official administrative review of all your submitted applications.</p>
+            </div>
+            <div class="header-btn-wrap">
+                <a href="{{ url_for('apply') }}" class="btn btn-primary">+ New Application</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Applications List Section -->
+    {% if applications %}
+        <div class="table-card">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Application No.</th>
+                            <th>Category</th>
+                            <th>Service Type</th>
+                            <th>Subject</th>
+                            <th>Submitted Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                            <tr>
+                                <td>
+                                    <strong class="app-number">{{ app.application_number }}</strong>
+                                </td>
+                                <td>
+                                    <span class="category-badge">{{ app.service_category }}</span>
+                                </td>
+                                <td>
+                                    <span class="service-type-text">{{ app.service_type }}</span>
+                                </td>
+                                <td>
+                                    <span class="table-subject" title="{{ app.subject }}">{{ app.subject }}</span>
+                                </td>
+                                <td>
+                                    <span class="date-text">{{ app.created_at.strftime('%d %b %Y, %I:%M %p') if app.created_at else 'N/A' }}</span>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-{{ app.status | lower | replace(' ', '-') }}">
+                                        {{ app.status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('application_detail', application_id=app.id) }}" class="btn btn-sm btn-outline">
+                                        View Details &rarr;
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="empty-state-card">
+            <div class="empty-state-icon">📋</div>
+            <h3>No Applications Submitted Yet</h3>
+            <p>You have not submitted any certificate requests or village grievance reports yet.</p>
+            <div class="empty-state-actions">
+                <a href="{{ url_for('apply') }}" class="btn btn-primary btn-lg">Submit Your First Application</a>
+                <a href="{{ url_for('services') }}" class="btn btn-secondary btn-lg">Browse Available Services</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

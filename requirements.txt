@@ -1,0 +1,8 @@
+# Core Flask Framework
+Flask==3.0.3
+
+# MySQL Connector for Python (Pure Python, easy setup on Windows/XAMPP)
+PyMySQL==1.1.1
+
+# Optional environment variable support
+python-dotenv==1.0.1

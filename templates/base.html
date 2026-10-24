@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Village Digital Service & Request Management System{% endblock %}</title>
+
+    <!-- Project Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header class="site-header">
+        <div class="container">
+            <nav class="navbar">
+                {% if session.get('officer_id') %}
+                    <a href="{{ url_for('officer_dashboard') }}" class="brand">
+                        <span class="brand-icon brand-icon-officer">🏛️</span>
+                        <div class="brand-text">
+                            <h1>Village Administration</h1>
+                            <p>Gram Sevak / Officer Portal</p>
+                        </div>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('home') }}" class="brand">
+                        <span class="brand-icon">🏛️</span>
+                        <div class="brand-text">
+                            <h1>Village Digital Service</h1>
+                            <p>Request Management Portal</p>
+                        </div>
+                    </a>
+                {% endif %}
+
+                <ul class="nav-links">
+                    {% if session.get('officer_id') %}
+                        <!-- Officer Navigation -->
+                        <li><a href="{{ url_for('officer_dashboard') }}" class="{% if request.endpoint == 'officer_dashboard' %}active{% endif %}">Dashboard</a></li>
+                        <li><a href="{{ url_for('officer_applications') }}" class="{% if request.endpoint in ['officer_applications', 'officer_application_detail'] %}active{% endif %}">Applications</a></li>
+                        <li><a href="{{ url_for('officer_notices') }}" class="{% if request.endpoint == 'officer_notices' %}active{% endif %}">Notices</a></li>
+                        <li><a href="{{ url_for('officer_citizens') }}" class="{% if request.endpoint == 'officer_citizens' %}active{% endif %}">Citizens</a></li>
+                        <li><a href="{{ url_for('officer_logout') }}" class="nav-btn-logout">Officer Logout</a></li>
+
+                    {% elif session.get('user_id') %}
+                        <!-- Citizen Navigation -->
+                        <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Home</a></li>
+                        <li><a href="{{ url_for('services') }}" class="{% if request.endpoint == 'services' %}active{% endif %}">Services</a></li>
+                        <li><a href="{{ url_for('notices') }}" class="{% if request.endpoint == 'notices' %}active{% endif %}">Notices</a></li>
+                        <li><a href="{{ url_for('apply') }}" class="{% if request.endpoint == 'apply' %}active{% endif %}">Apply</a></li>
+                        <li><a href="{{ url_for('my_applications') }}" class="{% if request.endpoint in ['my_applications', 'application_detail'] %}active{% endif %}">My Applications</a></li>
+                        <li><a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">Dashboard</a></li>
+                        <li><a href="{{ url_for('profile') }}" class="{% if request.endpoint == 'profile' %}active{% endif %}">Profile</a></li>
+                        <li><a href="{{ url_for('logout') }}" class="nav-btn-logout">Logout</a></li>
+
+                    {% else %}
+                        <!-- Public / Guest Navigation -->
+                        <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Home</a></li>
+                        <li><a href="{{ url_for('services') }}" class="{% if request.endpoint == 'services' %}active{% endif %}">Services</a></li>
+                        <li><a href="{{ url_for('notices') }}" class="{% if request.endpoint == 'notices' %}active{% endif %}">Notices</a></li>
+                        <li><a href="{{ url_for('track_application') }}" class="{% if request.endpoint == 'track_application' %}active{% endif %}">Track Status</a></li>
+                        <li><a href="{{ url_for('login') }}" class="{% if request.endpoint == 'login' %}active{% endif %}">Citizen Login</a></li>
+                        <li><a href="{{ url_for('register') }}" class="nav-btn-register {% if request.endpoint == 'register' %}active{% endif %}">Register</a></li>
+                        <li><a href="{{ url_for('officer_login') }}" class="nav-btn-officer {% if request.endpoint == 'officer_login' %}active{% endif %}">Officer Portal &rarr;</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Flash Notification Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-container">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                <span class="alert-text">{{ message }}</span>
+                                <button type="button" class="alert-close" onclick="this.parentElement.remove();">&times;</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}
+            <!-- Child templates inject their content here -->
+            {% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; <span id="current-year">2026</span> Village Digital Service &amp; Request Management System.</p>
+                <p>BCA Mini Project | Powered by Python Flask &amp; MySQL</p>
+                {% if not session.get('officer_id') %}
+                    <p style="margin-top: 0.25rem;"><a href="{{ url_for('officer_login') }}" style="color: var(--text-secondary); text-decoration: underline;">Gram Panchayat Staff / Officer Sign In</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </footer>
+
+    <!-- Project JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

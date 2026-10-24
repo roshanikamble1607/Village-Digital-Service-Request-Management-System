@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Applications | Officer Portal{% endblock %}
+
+{% block content %}
+<div class="officer-apps-wrapper">
+    <!-- Header Card -->
+    <div class="page-header-card officer-page-header">
+        <div class="header-flex">
+            <div>
+                <span class="page-tag">Gram Panchayat Officer Portal</span>
+                <h2>Citizen Applications &amp; Grievance Management</h2>
+                <p>Inspect incoming applications, update statuses, attach official remarks, and process public service delivery.</p>
+            </div>
+            <div class="header-btn-wrap">
+                <a href="{{ url_for('officer_export_applications') }}" class="btn btn-outline-white">📥 Export to CSV</a>
+                <a href="{{ url_for('officer_dashboard') }}" class="btn btn-outline-white">&larr; Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter & Search Toolbar -->
+    <div class="filter-toolbar-card">
+        <form method="GET" action="{{ url_for('officer_applications') }}" class="filter-form">
+            <div class="filter-row">
+                <div class="filter-group search-group">
+                    <label for="search">Search Records:</label>
+                    <input type="text" id="search" name="search" class="form-control" 
+                           placeholder="Search by App No, Citizen Name, Mobile, or Subject..." 
+                           value="{{ current_search }}">
+                </div>
+
+                <div class="filter-group">
+                    <label for="category">Service Category:</label>
+                    <select id="category" name="category" class="form-control" onchange="this.form.submit()">
+                        <option value="">-- All Categories --</option>
+                        <option value="Certificate Requests" {% if current_category == 'Certificate Requests' %}selected{% endif %}>Certificate Requests</option>
+                        <option value="Village Problems" {% if current_category == 'Village Problems' %}selected{% endif %}>Village Problems</option>
+                        <option value="Other Services" {% if current_category == 'Other Services' %}selected{% endif %}>Other Services</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="status">Application Status:</label>
+                    <select id="status" name="status" class="form-control" onchange="this.form.submit()">
+                        <option value="">-- All Statuses --</option>
+                        <option value="Pending" {% if current_status == 'Pending' %}selected{% endif %}>Pending Action (All)</option>
+                        <option value="Submitted" {% if current_status == 'Submitted' %}selected{% endif %}>Submitted</option>
+                        <option value="Under Review" {% if current_status == 'Under Review' %}selected{% endif %}>Under Review</option>
+                        <option value="Documents Required" {% if current_status == 'Documents Required' %}selected{% endif %}>Documents Required</option>
+                        <option value="Approved" {% if current_status == 'Approved' %}selected{% endif %}>Approved</option>
+                        <option value="Rejected" {% if current_status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                        <option value="Completed" {% if current_status == 'Completed' %}selected{% endif %}>Completed</option>
+                    </select>
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a href="{{ url_for('officer_applications') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Applications Table -->
+    {% if applications %}
+        <div class="table-card">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Application No.</th>
+                            <th>Applicant</th>
+                            <th>Contact</th>
+                            <th>Category</th>
+                            <th>Service Type</th>
+                            <th>Subject</th>
+                            <th>Submitted Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                            <tr>
+                                <td>
+                                    <strong class="app-number">{{ app.application_number }}</strong>
+                                </td>
+                                <td>
+                                    <strong>{{ app.applicant_name }}</strong>
+                                </td>
+                                <td>{{ app.mobile }}</td>
+                                <td>
+                                    <span class="category-badge">{{ app.service_category }}</span>
+                                </td>
+                                <td>
+                                    <span class="service-type-text">{{ app.service_type }}</span>
+                                </td>
+                                <td>
+                                    <span class="table-subject" title="{{ app.subject }}">{{ app.subject }}</span>
+                                </td>
+                                <td>
+                                    <span class="date-text">{{ app.created_at.strftime('%d-%m-%Y %I:%M %p') if app.created_at else 'N/A' }}</span>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-{{ app.status | lower | replace(' ', '-') }}">
+                                        {{ app.status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('officer_application_detail', application_id=app.id) }}" class="btn btn-sm btn-primary">
+                                        Review &amp; Action &rarr;
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-state-card">
+            <div class="empty-state-icon">🔍</div>
+            <h3>No Applications Found</h3>
+            <p>No applications match your current search or filter criteria.</p>
+            <div class="empty-state-actions">
+                <a href="{{ url_for('officer_applications') }}" class="btn btn-primary">Clear Filters &amp; View All</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

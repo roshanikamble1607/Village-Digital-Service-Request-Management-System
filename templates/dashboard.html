@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Village Digital Service System{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <!-- Welcome Header -->
+    <div class="dashboard-header-card">
+        <div class="dashboard-header-content">
+            <span class="user-greeting-badge">Citizen Dashboard</span>
+            <h2 class="dashboard-welcome">Welcome, {{ session.get('user_name', 'Citizen') }}</h2>
+            <p class="dashboard-subtext">
+                Gram Panchayat: <strong>{{ session.get('village_name', 'Not Specified') }}</strong> | 
+                Account Status: <span class="badge badge-active">Active</span>
+            </p>
+        </div>
+        <div class="dashboard-actions">
+            <a href="{{ url_for('apply') }}" class="btn btn-primary">+ Apply for Service</a>
+            <a href="{{ url_for('profile') }}" class="btn btn-outline">My Profile</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">Sign Out</a>
+        </div>
+    </div>
+
+    <!-- Quick Action Links (Requirement 9) -->
+    <div class="quick-actions-bar">
+        <a href="{{ url_for('apply') }}" class="quick-action-card">
+            <span class="action-icon">📝</span>
+            <div class="action-text">
+                <h4>Apply for a Service</h4>
+                <p>Submit certificate requests or local village problems</p>
+            </div>
+            <span class="action-arrow">&rarr;</span>
+        </a>
+
+        <a href="{{ url_for('my_applications') }}" class="quick-action-card">
+            <span class="action-icon">📋</span>
+            <div class="action-text">
+                <h4>My Applications</h4>
+                <p>View complete submission history and tracking</p>
+            </div>
+            <span class="action-arrow">&rarr;</span>
+        </a>
+
+        <a href="{{ url_for('services') }}" class="quick-action-card">
+            <span class="action-icon">🏛️</span>
+            <div class="action-text">
+                <h4>View Available Services</h4>
+                <p>Explore all 3 service categories &amp; requirements</p>
+            </div>
+            <span class="action-arrow">&rarr;</span>
+        </a>
+    </div>
+
+    <!-- 4 Overview Dynamic Status Cards (Requirement 9) -->
+    <div class="stats-grid">
+        <a href="{{ url_for('my_applications') }}" class="stat-card stat-applications text-decoration-none">
+            <div class="stat-header">
+                <span class="stat-icon">📄</span>
+                <span class="stat-badge">Total</span>
+            </div>
+            <div class="stat-number">{{ total_applications }}</div>
+            <div class="stat-title">My Applications</div>
+            <p class="stat-desc">All certificate and service requests</p>
+        </a>
+
+        <a href="{{ url_for('my_applications') }}" class="stat-card stat-complaints text-decoration-none">
+            <div class="stat-header">
+                <span class="stat-icon">⚠️</span>
+                <span class="stat-badge">Grievances</span>
+            </div>
+            <div class="stat-number">{{ total_complaints }}</div>
+            <div class="stat-title">My Complaints</div>
+            <p class="stat-desc">Village civic reports &amp; issues submitted</p>
+        </a>
+
+        <a href="{{ url_for('my_applications') }}" class="stat-card stat-pending text-decoration-none">
+            <div class="stat-header">
+                <span class="stat-icon">⏳</span>
+                <span class="stat-badge">In Progress</span>
+            </div>
+            <div class="stat-number">{{ pending_requests }}</div>
+            <div class="stat-title">Pending Requests</div>
+            <p class="stat-desc">Submitted, Under Review, or Documents Required</p>
+        </a>
+
+        <a href="{{ url_for('my_applications') }}" class="stat-card stat-completed text-decoration-none">
+            <div class="stat-header">
+                <span class="stat-icon">✅</span>
+                <span class="stat-badge">Finished</span>
+            </div>
+            <div class="stat-number">{{ completed_requests }}</div>
+            <div class="stat-title">Completed Requests</div>
+            <p class="stat-desc">Successfully approved and resolved requests</p>
+        </a>
+    </div>
+
+    <!-- Recent Applications Section -->
+    <div class="recent-apps-section">
+        <div class="panel-header">
+            <h3>Recent Submissions</h3>
+            <a href="{{ url_for('my_applications') }}" class="panel-link">View All &rarr;</a>
+        </div>
+
+        {% if recent_applications %}
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Application No.</th>
+                            <th>Category</th>
+                            <th>Service Type</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in recent_applications %}
+                            <tr>
+                                <td><strong>{{ app.application_number }}</strong></td>
+                                <td><span class="category-badge">{{ app.service_category }}</span></td>
+                                <td>{{ app.service_type }}</td>
+                                <td>{{ app.created_at.strftime('%d-%m-%Y') if app.created_at else '' }}</td>
+                                <td>
+                                    <span class="status-badge status-{{ app.status | lower | replace(' ', '-') }}">
+                                        {{ app.status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('application_detail', application_id=app.id) }}" class="btn btn-sm btn-outline">
+                                        View Details
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="mini-empty-notice">
+                <p>No applications submitted yet. <a href="{{ url_for('apply') }}">Click here to apply for a service &rarr;</a></p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Citizen Summary & Information Panel -->
+    <div class="dashboard-bottom-grid">
+        <div class="info-panel">
+            <div class="panel-header">
+                <h3>Citizen Profile Summary</h3>
+                <a href="{{ url_for('profile') }}" class="panel-link">Edit Profile &rarr;</a>
+            </div>
+            <div class="profile-quick-details">
+                <div class="quick-detail-item">
+                    <span class="detail-label">Full Name:</span>
+                    <span class="detail-value">{{ session.get('user_name') }}</span>
+                </div>
+                <div class="quick-detail-item">
+                    <span class="detail-label">Registered Email:</span>
+                    <span class="detail-value">{{ session.get('user_email') }}</span>
+                </div>
+                <div class="quick-detail-item">
+                    <span class="detail-label">Village / Panchayat:</span>
+                    <span class="detail-value">{{ session.get('village_name') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-panel notice-panel">
+            <div class="panel-header">
+                <h3>Official Panchayat Advisory</h3>
+            </div>
+            <p class="notice-text">
+                Ensure all certificate application forms contain complete addresses and authentic details. 
+                If officers request additional proof, your request status will display <strong>Documents Required</strong>.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

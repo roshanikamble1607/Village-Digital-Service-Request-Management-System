@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Village Notices | Officer Portal{% endblock %}
+
+{% block content %}
+<div class="officer-notices-wrapper">
+    <!-- Header -->
+    <div class="page-header-card officer-page-header">
+        <div class="header-flex">
+            <div>
+                <span class="page-tag">Official Public Circulars</span>
+                <h2>Manage Village Notices &amp; Announcements</h2>
+                <p>Publish official announcements, meeting agendas, and emergency advisories for village citizens.</p>
+            </div>
+            <div class="header-btn-wrap">
+                <a href="{{ url_for('officer_dashboard') }}" class="btn btn-outline-white">&larr; Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2-Column: Left = Add New Notice Form, Right = Active Notices List -->
+    <div class="officer-split-layout">
+        <!-- Add Notice Form -->
+        <div class="officer-action-sidebar">
+            <div class="action-card">
+                <div class="action-card-header">
+                    <span class="action-icon-small">📢</span>
+                    <h3>Publish New Notice</h3>
+                </div>
+
+                <form method="POST" action="{{ url_for('officer_add_notice') }}" class="officer-action-form">
+                    <div class="form-group">
+                        <label for="title">Notice Title / Subject <span class="required">*</span></label>
+                        <input type="text" id="title" name="title" class="form-control" 
+                               placeholder="e.g. Gram Sabha Meeting / Water Pipeline Notice" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Notice Category <span class="required">*</span></label>
+                        <select id="category" name="category" class="form-control" required>
+                            <option value="Meeting">Meeting (ग्रामसभा / सभा)</option>
+                            <option value="Alert">Alert (तातडीची सूचना / अडचण)</option>
+                            <option value="Health">Health (आरोग्य तपासणी / शिबीर)</option>
+                            <option value="Scheme">Scheme (शासकीय योजना / अनुदान)</option>
+                            <option value="General" selected>General (सर्वसाधारण सूचना)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="content">Full Notice Content / Description <span class="required">*</span></label>
+                        <textarea id="content" name="content" rows="5" class="form-control" 
+                                  placeholder="Write the full announcement details, date, time, and instructions..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block btn-lg btn-save-action">
+                        Publish to Public Board
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Current Active Notices List -->
+        <div class="officer-detail-main">
+            <div class="detail-content-card">
+                <h4 class="section-subheading">Active Public Notices ({{ notices | length }})</h4>
+
+                {% if notices %}
+                    <div class="notices-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Date</th>
+                                    <th>Posted By</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for n in notices %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ n.title }}</strong><br>
+                                            <small class="text-secondary" style="display: block; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                {{ n.content }}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <span class="category-badge">{{ n.category }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="date-text">{{ n.created_at.strftime('%d-%m-%Y') if n.created_at else '' }}</span>
+                                        </td>
+                                        <td>{{ n.posted_by }}</td>
+                                        <td>
+                                            <a href="{{ url_for('officer_delete_notice', notice_id=n.id) }}" 
+                                               class="btn btn-sm btn-outline-danger" 
+                                               onclick="return confirm('Are you sure you want to delete this notice?');">
+                                                Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-secondary">No notices posted yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}Officer Dashboard | Village Digital Service System{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper officer-dashboard-wrapper">
+    <!-- Officer Header Card -->
+    <div class="dashboard-header-card officer-header-card">
+        <div class="dashboard-header-content">
+            <span class="user-greeting-badge officer-greeting-badge">Gram Panchayat Administrative Portal</span>
+            <h2 class="dashboard-welcome">Welcome, {{ session.get('officer_name', 'Officer') }}</h2>
+            <p class="dashboard-subtext">
+                Designation: <strong>{{ session.get('officer_designation', 'Gram Sevak') }}</strong> &bull; 
+                Jurisdiction: <strong>{{ session.get('officer_village', 'Gram Panchayat') }}</strong> &bull; 
+                Access Level: <span class="badge badge-active">Authorized Officer</span>
+            </p>
+        </div>
+        <div class="dashboard-actions">
+            <a href="{{ url_for('officer_applications') }}" class="btn btn-primary">Review Applications</a>
+            <a href="{{ url_for('officer_notices') }}" class="btn btn-outline">📢 Manage Notices</a>
+            <a href="{{ url_for('officer_export_applications') }}" class="btn btn-outline">📥 Export CSV</a>
+            <a href="{{ url_for('officer_citizens') }}" class="btn btn-outline">Citizens Directory</a>
+            <a href="{{ url_for('officer_logout') }}" class="btn btn-outline-danger">Sign Out</a>
+        </div>
+    </div>
+
+    <!-- Overview Metrics Grid -->
+    <div class="stats-grid officer-stats-grid">
+        <a href="{{ url_for('officer_applications') }}" class="stat-card stat-applications text-decoration-none">
+            <div class="stat-header">
+                <span class="stat-icon">📥</span>
+                <span class="stat-badge">Total Received</span>
+            </div>
+            <div class="stat-number">{{ total_applications }}</div>
+            <div class="stat-title">Total Applications</div>
+            <p class="stat-desc">Cumulative requests submitted across all services</p>
+        </a>
+
+        <a href="{{ url_for('officer_applications', status='Pending') }}" class="stat-card stat-pending text-decoration-none">
+            <div class="stat-header">
+                <span class="stat-icon">⏳</span>
+                <span class="stat-badge">Action Required</span>
+            </div>
+            <div class="stat-number">{{ pending_applications }}</div>
+            <div class="stat-title">Pending Review</div>
+            <p class="stat-desc">Submitted, Under Review, or Documents Required</p>
+        </a>
+
+        <a href="{{ url_for('officer_applications', status='Approved') }}" class="stat-card stat-completed text-decoration-none">
+            <div class="stat-header">
+                <span class="stat-icon">✅</span>
+                <span class="stat-badge">Approved</span>
+            </div>
+            <div class="stat-number">{{ approved_applications }}</div>
+            <div class="stat-title">Approved Requests</div>
+            <p class="stat-desc">Certificates and services verified and approved</p>
+        </a>
+
+        <a href="{{ url_for('officer_applications', status='Completed') }}" class="stat-card stat-applications text-decoration-none">
+            <div class="stat-header">
+                <span class="stat-icon">🎉</span>
+                <span class="stat-badge">Resolved</span>
+            </div>
+            <div class="stat-number">{{ completed_applications }}</div>
+            <div class="stat-title">Completed Cases</div>
+            <p class="stat-desc">Issued certificates and resolved complaints</p>
+        </a>
+
+        <a href="{{ url_for('officer_applications', status='Rejected') }}" class="stat-card stat-complaints text-decoration-none">
+            <div class="stat-header">
+                <span class="stat-icon">❌</span>
+                <span class="stat-badge">Rejected</span>
+            </div>
+            <div class="stat-number">{{ rejected_applications }}</div>
+            <div class="stat-title">Rejected Requests</div>
+            <p class="stat-desc">Requests declined due to ineligibility or remarks</p>
+        </a>
+
+        <a href="{{ url_for('officer_citizens') }}" class="stat-card text-decoration-none" style="border-top: 4px solid #7c3aed;">
+            <div class="stat-header">
+                <span class="stat-icon">👥</span>
+                <span class="stat-badge">Registered</span>
+            </div>
+            <div class="stat-number">{{ total_citizens }}</div>
+            <div class="stat-title">Village Citizens</div>
+            <p class="stat-desc">Registered citizen accounts in the village portal</p>
+        </a>
+    </div>
+
+    <!-- Category Breakdown Cards -->
+    <div class="category-breakdown-row">
+        <div class="cat-pill-card">
+            <span class="cat-pill-icon">📜</span>
+            <div>
+                <strong>{{ certificates_count }}</strong>
+                <span>Certificate Requests</span>
+            </div>
+        </div>
+
+        <div class="cat-pill-card">
+            <span class="cat-pill-icon">⚠️</span>
+            <div>
+                <strong>{{ problems_count }}</strong>
+                <span>Village Problems / Grievances</span>
+            </div>
+        </div>
+
+        <div class="cat-pill-card">
+            <span class="cat-pill-icon">📋</span>
+            <div>
+                <strong>{{ other_count }}</strong>
+                <span>Other Service Inquiries</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Urgent Review Queue -->
+    <div class="recent-apps-section">
+        <div class="panel-header">
+            <div>
+                <h3>Pending Application Review Queue</h3>
+                <p class="text-secondary text-sm">Applications awaiting officer verification, approval, or document requests.</p>
+            </div>
+            <a href="{{ url_for('officer_applications') }}" class="btn btn-sm btn-outline">View All Applications &rarr;</a>
+        </div>
+
+        {% if recent_applications %}
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>App No.</th>
+                            <th>Applicant</th>
+                            <th>Mobile</th>
+                            <th>Category</th>
+                            <th>Service Type</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in recent_applications %}
+                            <tr>
+                                <td><strong>{{ app.application_number }}</strong></td>
+                                <td>{{ app.applicant_name }}</td>
+                                <td>{{ app.mobile }}</td>
+                                <td><span class="category-badge">{{ app.service_category }}</span></td>
+                                <td>{{ app.service_type }}</td>
+                                <td>{{ app.created_at.strftime('%d-%m-%Y') if app.created_at else '' }}</td>
+                                <td>
+                                    <span class="status-badge status-{{ app.status | lower | replace(' ', '-') }}">
+                                        {{ app.status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('officer_application_detail', application_id=app.id) }}" class="btn btn-sm btn-primary">
+                                        Review &rarr;
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="mini-empty-notice">
+                <p>✅ All caught up! There are no pending applications in the queue right now.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Citizen Login | Village Digital Service System{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card auth-card-narrow">
+        <div class="auth-header">
+            <span class="auth-icon">🔐</span>
+            <h2>Citizen Login</h2>
+            <p>Access your citizen dashboard and service requests.</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('login') }}" class="auth-form" novalidate>
+            <div class="form-group">
+                <label for="login_id">Email Address or Mobile Number <span class="required">*</span></label>
+                <input type="text" id="login_id" name="login_id" class="form-control" 
+                       placeholder="Enter registered email or 10-digit mobile" 
+                       value="{{ request.form.get('login_id', '') }}" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password <span class="required">*</span></label>
+                <input type="password" id="password" name="password" class="form-control" 
+                       placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Don't have an account yet? <a href="{{ url_for('register') }}">Register as a Citizen</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

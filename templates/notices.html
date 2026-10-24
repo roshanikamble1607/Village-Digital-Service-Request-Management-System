@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Village Notices & Announcements | Village Digital Service System{% endblock %}
+
+{% block content %}
+<div class="notices-wrapper">
+    <!-- Header -->
+    <div class="page-header-card">
+        <span class="page-tag">Gram Panchayat Public Board</span>
+        <h2>Village Notices &amp; Public Announcements</h2>
+        <p>Stay informed with official Gram Sabha meeting notices, emergency alerts, welfare scheme announcements, and village circulars.</p>
+    </div>
+
+    <!-- Notices Grid -->
+    {% if notices %}
+        <div class="notices-grid">
+            {% for n in notices %}
+                <div class="notice-card notice-cat-{{ n.category | lower }}">
+                    <div class="notice-card-header">
+                        <span class="notice-badge badge-{{ n.category | lower }}">{{ n.category }}</span>
+                        <span class="notice-date">📅 {{ n.created_at.strftime('%d %B %Y') if n.created_at else '' }}</span>
+                    </div>
+                    <h3 class="notice-title">{{ n.title }}</h3>
+                    <p class="notice-content">{{ n.content }}</p>
+                    <div class="notice-card-footer">
+                        <span>Issued by: <strong>{{ n.posted_by }}</strong></span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state-card">
+            <div class="empty-state-icon">📢</div>
+            <h3>No Active Notices</h3>
+            <p>There are no public circulars or notices posted right now.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

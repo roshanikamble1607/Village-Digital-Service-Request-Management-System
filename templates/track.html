@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Track Application Status | Village Digital Service System{% endblock %}
+
+{% block content %}
+<div class="track-wrapper">
+    <!-- Header -->
+    <div class="page-header-card track-header-card">
+        <span class="page-tag">Public Service Delivery</span>
+        <h2>Track Your Application Status</h2>
+        <p>Enter your unique 12-digit Application Tracking Number (provided upon submission) to check live status.</p>
+        
+        <!-- Search Input Box -->
+        <form method="POST" action="{{ url_for('track_application') }}" class="track-search-form">
+            <div class="track-search-box">
+                <input type="text" name="application_number" class="track-input" 
+                       placeholder="e.g. VSS-2026-123456" 
+                       value="{{ search_number }}" required autofocus>
+                <button type="submit" class="btn btn-primary btn-track">Track Status</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tracking Result Display -->
+    {% if app %}
+        <div class="tracking-result-card">
+            <div class="tracking-card-header">
+                <div>
+                    <span class="detail-category-tag">{{ app.service_category }}</span>
+                    <h3 class="track-app-num">{{ app.application_number }}</h3>
+                    <h4 class="track-app-title">{{ app.service_type }}</h4>
+                </div>
+                <div class="track-status-box">
+                    <span class="status-label">Live Status:</span>
+                    <span class="status-badge-lg status-{{ app.status | lower | replace(' ', '-') }}">
+                        {{ app.status }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Visual Progress Flow -->
+            <div class="status-timeline">
+                <div class="timeline-step {% if app.status in ['Submitted', 'Under Review', 'Documents Required', 'Approved', 'Completed'] %}step-done{% endif %}">
+                    <div class="step-circle">1</div>
+                    <span class="step-title">Submitted</span>
+                </div>
+                <div class="timeline-line {% if app.status in ['Under Review', 'Documents Required', 'Approved', 'Completed'] %}line-done{% endif %}"></div>
+
+                <div class="timeline-step {% if app.status in ['Under Review', 'Documents Required', 'Approved', 'Completed'] %}step-done{% endif %}">
+                    <div class="step-circle">2</div>
+                    <span class="step-title">Under Review</span>
+                </div>
+                <div class="timeline-line {% if app.status in ['Approved', 'Completed'] %}line-done{% endif %}"></div>
+
+                <div class="timeline-step {% if app.status in ['Approved', 'Completed'] %}step-done{% elif app.status == 'Rejected' %}step-rejected{% endif %}">
+                    <div class="step-circle">
+                        {% if app.status == 'Rejected' %}✕{% else %}3{% endif %}
+                    </div>
+                    <span class="step-title">
+                        {% if app.status == 'Rejected' %}Rejected{% else %}Approved / Resolved{% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Details Summary Grid -->
+            <div class="track-details-grid">
+                <div class="track-field">
+                    <span class="field-label">Applicant Name:</span>
+                    <span class="field-value font-semibold">{{ app.applicant_name }}</span>
+                </div>
+                <div class="track-field">
+                    <span class="field-label">Date Submitted:</span>
+                    <span class="field-value">{{ app.created_at.strftime('%d %B %Y, %I:%M %p') if app.created_at else 'N/A' }}</span>
+                </div>
+                <div class="track-field">
+                    <span class="field-label">Last Status Update:</span>
+                    <span class="field-value">{{ app.updated_at.strftime('%d %B %Y, %I:%M %p') if app.updated_at else 'N/A' }}</span>
+                </div>
+                <div class="track-field">
+                    <span class="field-label">Service Request Subject:</span>
+                    <span class="field-value">{{ app.subject }}</span>
+                </div>
+            </div>
+
+            <!-- Official Officer Remarks -->
+            <div class="remarks-card {% if app.officer_remarks %}remarks-active{% endif %}" style="margin-top: 1.5rem;">
+                <div class="remarks-header">
+                    <span class="remarks-icon">🏛️</span>
+                    <h4>Official Gram Panchayat Remarks</h4>
+                </div>
+                <div class="remarks-body">
+                    {% if app.officer_remarks %}
+                        <p class="remarks-text">{{ app.officer_remarks }}</p>
+                    {% else %}
+                        <p class="remarks-placeholder">
+                            Your application is in processing queue. No official requisitions or remarks yet.
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="track-actions-row">
+                {% if session.get('user_id') %}
+                    <a href="{{ url_for('application_detail', application_id=app.id) }}" class="btn btn-primary">
+                        View Full Application &amp; Attachments &rarr;
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline">
+                        Sign In to View Full File &amp; Attachments &rarr;
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    {% elif search_number %}
+        <div class="empty-state-card" style="margin-top: 1.5rem;">
+            <div class="empty-state-icon">⚠️</div>
+            <h3>Application Not Found</h3>
+            <p>We could not find any record matching <strong>{{ search_number }}</strong>. Please verify your tracking number and try again.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

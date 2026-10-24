@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Available Village Services | Village Digital Service System{% endblock %}
+
+{% block content %}
+<div class="services-wrapper">
+    <!-- Header Banner -->
+    <div class="page-header-card">
+        <span class="page-tag">Panchayat Citizen Portal</span>
+        <h2>Village Services &amp; Request Directory</h2>
+        <p>Explore all digital government certificates, civic grievance redressals, and local citizen services available online.</p>
+        <div class="header-action-row">
+            <a href="{{ url_for('apply') }}" class="btn btn-primary">Direct Application Form &rarr;</a>
+            <a href="{{ url_for('my_applications') }}" class="btn btn-outline-white">My Submitted Requests</a>
+        </div>
+    </div>
+
+    <!-- Category 1: Certificate Requests -->
+    <section class="service-category-section">
+        <div class="category-header">
+            <div class="category-icon-box cat-certificates">📜</div>
+            <div>
+                <h3>A. Certificate Requests</h3>
+                <p>Apply for official Gram Panchayat documents and civil status certificates without visiting offices.</p>
+            </div>
+        </div>
+
+        <div class="service-items-grid">
+            <div class="service-card">
+                <div class="service-card-body">
+                    <h4>Residence Certificate</h4>
+                    <p>Official proof of residence in the village / gram panchayat jurisdiction for legal and academic purposes.</p>
+                </div>
+                <div class="service-card-footer">
+                    <span class="processing-time">⏱️ 3-5 Working Days</span>
+                    <a href="{{ url_for('apply', category='Certificate Requests', type='Residence Certificate') }}" class="btn btn-sm btn-primary">Apply Now</a>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-body">
+                    <h4>Income Certificate</h4>
+                    <p>Income verification certificate for government welfare schemes, student scholarships, and subsidies.</p>
+                </div>
+                <div class="service-card-footer">
+                    <span class="processing-time">⏱️ 3-5 Working Days</span>
+                    <a href="{{ url_for('apply', category='Certificate Requests', type='Income Certificate') }}" class="btn btn-sm btn-primary">Apply Now</a>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-body">
+                    <h4>Birth Certificate</h4>
+                    <p>Official record and certification of birth registration issued by the local panchayat authority.</p>
+                </div>
+                <div class="service-card-footer">
+                    <span class="processing-time">⏱️ 2-4 Working Days</span>
+                    <a href="{{ url_for('apply', category='Certificate Requests', type='Birth Certificate') }}" class="btn btn-sm btn-primary">Apply Now</a>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-body">
+                    <h4>Death Certificate</h4>
+                    <p>Certified death registration record issued for inheritance, administrative, and legal settlement purposes.</p>
+                </div>
+                <div class="service-card-footer">
+                    <span class="processing-time">⏱️ 2-4 Working Days</span>
+                    <a href="{{ url_for('apply', category='Certificate Requests', type='Death Certificate') }}" class="btn btn-sm btn-primary">Apply Now</a>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-body">
+                    <h4>Caste Certificate</h4>
+                    <p>Application for local panchayat endorsement and recommendation for official caste certification.</p>
+                </div>
+                <div class="service-card-footer">
+                    <span class="processing-time">⏱️ 5-7 Working Days</span>
+                    <a href="{{ url_for('apply', category='Certificate Requests', type='Caste Certificate') }}" class="btn btn-sm btn-primary">Apply Now</a>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-body">
+                    <h4>Other Certificate</h4>
+                    <p>No-objection certificates (NOC), character verification, and other customized local certificates.</p>
+                </div>
+                <div class="service-card-footer">
+                    <span class="processing-time">⏱️ 3-5 Working Days</span>
+                    <a href="{{ url_for('apply', category='Certificate Requests', type='Other Certificate') }}" class="btn btn-sm btn-primary">Apply Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category 2: Village Problems -->
+    <section class="service-category-section">
+        <div class="category-header">
+            <div class="category-icon-box cat-problems">⚠️</div>
+            <div>
+                <h3>B. Village Problems &amp; Grievances</h3>
+                <p>Report public infrastructure issues, civic maintenance requirements, and village community concerns.</p>
+            </div>
+        </div>
+
+        <div class="service-items-grid">
+            <div class="service-card">
+                <div class="service-card-body">
+                    <h4>Water Supply</h4>
+                    <p>Report water shortages, pipeline leakages, public tap breakdowns, or contaminated water issues.</p>
+                </div>
+                <div class="service-card-footer">
+                    <span class="processing-time">⚡ High Priority</span>
+                    <a href="{{ url_for('apply', category='Village Problems', type='Water Supply') }}" class="btn btn-sm btn-warning">Report Issue</a>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-body">
+                    <h4>Streetlight Repair</h4>
+                    <p>Report broken poles, non-functional streetlights, or dark street spots requiring immediate repair.</p>
+                </div>
+                <div class="service-card-footer">
+                    <span class="processing-time">⚡ 24-48 Hours</span>
+                    <a href="{{ url_for('apply', category='Village Problems', type='Streetlight Repair') }}" class="btn btn-sm btn-warning">Report Issue</a>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-body">
+                    <h4>Road Repair</h4>
+                    <p>Report potholes, unpaved village roads, damaged culverts, or urgent street repair needs.</p>
+                </div>
+                <div class="service-card-footer">
+                    <span class="processing-time">⏱️ 5-7 Working Days</span>
+                    <a href="{{ url_for('apply', category='Village Problems', type='Road Repair') }}" class="btn btn-sm btn-warning">Report Issue</a>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-body">
+                    <h4>Garbage Collection</h4>
+                    <p>Request waste clearance, report unattended public trash spots, or schedule community waste pickup.</p>
+                </div>
+                <div class="service-card-footer">
+                    <span class="processing-time">⚡ 24-48 Hours</span>
+                    <a href="{{ url_for('apply', category='Village Problems', type='Garbage Collection') }}" class="btn btn-sm btn-warning">Report Issue</a>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-body">
+                    <h4>Drainage Problem</h4>
+                    <p>Report clogged drains, waterlogging in public streets, or sewer maintenance issues.</p>
+                </div>
+                <div class="service-card-footer">
+                    <span class="processing-time">⚡ 24-48 Hours</span>
+                    <a href="{{ url_for('apply', category='Village Problems', type='Drainage Problem') }}" class="btn btn-sm btn-warning">Report Issue</a>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-body">
+                    <h4>Other Village Problem</h4>
+                    <p>Report agricultural boundary disputes, noise disturbances, public health concerns, and other civic issues.</p>
+                </div>
+                <div class="service-card-footer">
+                    <span class="processing-time">⏱️ Varies by Issue</span>
+                    <a href="{{ url_for('apply', category='Village Problems', type='Other Village Problem') }}" class="btn btn-sm btn-warning">Report Issue</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category 3: Other Services -->
+    <section class="service-category-section">
+        <div class="category-header">
+            <div class="category-icon-box cat-other">📋</div>
+            <div>
+                <h3>C. Other Citizen Services</h3>
+                <p>Request local governance documents, administrative reports, welfare scheme endorsements, and inquiries.</p>
+            </div>
+        </div>
+
+        <div class="service-items-grid">
+            <div class="service-card">
+                <div class="service-card-body">
+                    <h4>Document Request</h4>
+                    <p>Request certified copies of panchayat resolutions, tax assessment records, or property index registers.</p>
+                </div>
+                <div class="service-card-footer">
+                    <span class="processing-time">⏱️ 3-5 Working Days</span>
+                    <a href="{{ url_for('apply', category='Other Services', type='Document Request') }}" class="btn btn-sm btn-primary">Apply Now</a>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-body">
+                    <h4>Local Report Request</h4>
+                    <p>Request local inspection reports, agricultural damage assessments, or village planning records.</p>
+                </div>
+                <div class="service-card-footer">
+                    <span class="processing-time">⏱️ 5-7 Working Days</span>
+                    <a href="{{ url_for('apply', category='Other Services', type='Local Report Request') }}" class="btn btn-sm btn-primary">Apply Now</a>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-body">
+                    <h4>Other Service Request</h4>
+                    <p>Submit general administrative inquiries, feedback, or custom requests to the Gram Panchayat authority.</p>
+                </div>
+                <div class="service-card-footer">
+                    <span class="processing-time">⏱️ 3-5 Working Days</span>
+                    <a href="{{ url_for('apply', category='Other Services', type='Other Service Request') }}" class="btn btn-sm btn-primary">Apply Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Registered Citizens Directory | Officer Portal{% endblock %}
+
+{% block content %}
+<div class="officer-citizens-wrapper">
+    <!-- Header Card -->
+    <div class="page-header-card officer-page-header">
+        <div class="header-flex">
+            <div>
+                <span class="page-tag">Gram Panchayat Census &amp; Registry</span>
+                <h2>Village Citizens Directory</h2>
+                <p>Directory of registered village residents with contact details and application activity.</p>
+            </div>
+            <div class="header-btn-wrap">
+                <a href="{{ url_for('officer_dashboard') }}" class="btn btn-outline-white">&larr; Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="filter-toolbar-card">
+        <form method="GET" action="{{ url_for('officer_citizens') }}" class="filter-form">
+            <div class="filter-row">
+                <div class="filter-group search-group" style="flex: 1;">
+                    <label for="q">Search Citizen:</label>
+                    <input type="text" id="q" name="q" class="form-control" 
+                           placeholder="Search by Citizen Name, Mobile Number, Email, or Address..." 
+                           value="{{ search_query }}">
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    <a href="{{ url_for('officer_citizens') }}" class="btn btn-secondary">Clear</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Citizens Table -->
+    {% if citizens %}
+        <div class="table-card">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Citizen ID</th>
+                            <th>Full Name</th>
+                            <th>Mobile</th>
+                            <th>Email</th>
+                            <th>Village</th>
+                            <th>Address / Ward</th>
+                            <th>Applications</th>
+                            <th>Joined Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in citizens %}
+                            <tr>
+                                <td><span class="app-number">#CIT-{{ "%04d" % c.id }}</span></td>
+                                <td><strong>{{ c.full_name }}</strong></td>
+                                <td><a href="tel:{{ c.mobile }}">{{ c.mobile }}</a></td>
+                                <td>{{ c.email }}</td>
+                                <td><span class="category-badge">{{ c.village_name }}</span></td>
+                                <td>{{ c.address }}</td>
+                                <td>
+                                    <a href="{{ url_for('officer_applications', search=c.mobile) }}" class="badge badge-active" title="View applications from this citizen">
+                                        {{ c.app_count }} Requests
+                                    </a>
+                                </td>
+                                <td>{{ c.created_at.strftime('%d-%m-%Y') if c.created_at else '' }}</td>
+                                <td>
+                                    {% if c.is_active %}
+                                        <span class="badge badge-active">Active</span>
+                                    {% else %}
+                                        <span class="status-badge status-rejected">Inactive</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-state-card">
+            <div class="empty-state-icon">👥</div>
+            <h3>No Citizens Found</h3>
+            <p>No registered citizen accounts match your search query.</p>
+            <div class="empty-state-actions">
+                <a href="{{ url_for('officer_citizens') }}" class="btn btn-primary">View All Citizens</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

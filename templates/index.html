@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Home | Village Digital Service & Request Management System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <span class="hero-badge">Gram Panchayat Digital Initiative</span>
+    <h2 class="hero-title">Village Digital Service &amp; Request Management System</h2>
+    <p class="hero-description">
+        A unified digital platform empowering village citizens to easily apply for local government services,
+        request official certificates, report village problems and complaints, and track request status in real time.
+    </p>
+    <div class="hero-status">
+        <span class="status-dot"></span>
+        <span>System Architecture Initialized &amp; Online</span>
+    </div>
+</section>
+
+<!-- Latest Village Notices Section -->
+{% if notices %}
+<section id="notices" class="home-notices-section">
+    <div class="home-notices-header">
+        <div>
+            <h3 class="section-title" style="margin-bottom: 0.25rem;">📢 Latest Village Notices &amp; Announcements</h3>
+            <p class="section-subtitle">Important public updates, alerts, and circulars issued by the Gram Panchayat.</p>
+        </div>
+        <a href="{{ url_for('notices') }}" class="btn btn-sm btn-outline">View All Notices &rarr;</a>
+    </div>
+
+    <div class="notices-grid">
+        {% for n in notices %}
+            <div class="notice-card notice-cat-{{ n.category | lower }}">
+                <div class="notice-card-header">
+                    <span class="notice-badge badge-{{ n.category | lower }}">{{ n.category }}</span>
+                    <span class="notice-date">📅 {{ n.created_at.strftime('%d %B %Y') if n.created_at else '' }}</span>
+                </div>
+                <h4 class="notice-title">{{ n.title }}</h4>
+                <p class="notice-content">{{ n.content }}</p>
+                <div class="notice-card-footer">
+                    <span>Issued by: <strong>{{ n.posted_by }}</strong></span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Overview of Services Section -->
+<section id="services">
+    <h3 class="section-title">Key System Capabilities</h3>
+    <p class="section-subtitle">Designed to streamline citizen-to-administration communication.</p>
+
+    <div class="card-grid">
+        <div class="card">
+            <div class="card-icon">📜</div>
+            <h3>Certificate Requests</h3>
+            <p>Apply online for caste, income, residence, and birth certificates without standing in physical queues.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">⚠️</div>
+            <h3>Village Problem Reporting</h3>
+            <p>Report civic issues such as broken streetlights, water supply shortages, and sanitation problems.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">🔍</div>
+            <h3>Real-Time Tracking</h3>
+            <p>Track the complete progress and resolution status of every submitted request with a unique tracking ID.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">📢</div>
+            <h3>Public Notices &amp; Schemes</h3>
+            <p>Access official village administration notices, development updates, and welfare scheme information.</p>
+        </div>
+    </div>
+</section>
+
+<!-- About / Setup Info Card -->
+<section id="about">
+    <div class="info-card">
+        <h4>Project Architecture Overview</h4>
+        <ul>
+            <li><strong>Frontend:</strong> Semantic HTML5, Custom Responsive CSS3, Vanilla JavaScript</li>
+            <li><strong>Backend:</strong> Python Flask (Jinja2 Template Engine)</li>
+            <li><strong>Database:</strong> MySQL (Database: <code>village_service_db</code>)</li>
+            <li><strong>Status:</strong> Initial setup and basic architecture complete. Ready for module development.</li>
+        </ul>
+    </div>
+</section>
+{% endblock %}
